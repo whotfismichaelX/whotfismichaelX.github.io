@@ -39,3 +39,7 @@ public/         # Static assets (icons, images, fonts)
 ## Environment Variables
 
 - `GA_MEASUREMENT_ID` — Google Analytics Measurement ID (optional)
+
+## Notes
+
+- `WorkTimelinePoint` (in `app/types/work.ts`) has an optional `description` field for displaying work experience details in the 3D timeline.

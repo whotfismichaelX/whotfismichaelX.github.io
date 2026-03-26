@@ -13,4 +13,10 @@ export const FOOTER_LINKS: FooterLink[] = [
     icon: 'icons/mail.svg',
     url: 'mailto:arabskiy@icloud.com',
   },
+  {
+    name: 'Resume',
+    hoverText: 'Скачать',
+    icon: 'icons/file.svg',
+    url: './resume.pdf',
+  },
 ];
