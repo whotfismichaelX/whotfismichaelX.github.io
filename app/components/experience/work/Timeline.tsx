@@ -10,7 +10,7 @@ import { WORK_TIMELINE } from "@constants";
 import { WorkTimelinePoint } from "@types";
 
 const reusableLeft = new THREE.Vector3(-0.3, 0, -0.1);
-const reusableRight = new THREE.Vector3(0.5, 0, -0.1);
+const reusableRight = new THREE.Vector3(0.3, 0, -0.1);
 
 const TimelinePoint = ({ point, diff }: { point: WorkTimelinePoint, diff: number }) => {
   const getPoint = useMemo(() => {
@@ -52,11 +52,11 @@ const TimelinePoint = ({ point, diff }: { point: WorkTimelinePoint, diff: number
             <Text {...titleProps} position={[0, -diff / 2, 0]}>
               {point.title}
             </Text>
-            <Text {...textProps} fontSize={0.2} position={[0, -0.5 - diff, 0]}>
+            <Text {...textProps} fontSize={0.2} position={[0, -0.45 - diff, 0]}>
               {point.subtitle}
             </Text>
             {point.description && (
-              <Text {...textProps} fontSize={0.12} maxWidth={4} lineHeight={1.4} position={[0, -0.85 - diff, 0]}>
+              <Text {...textProps} fontSize={0.12} maxWidth={4} lineHeight={1.4} position={[0, -1.1 - diff, 0]}>
                 {point.description}
               </Text>
             )}
