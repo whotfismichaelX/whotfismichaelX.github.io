@@ -27,7 +27,7 @@ export const WORK_TIMELINE: WorkTimelinePoint[] = [
     position: 'left',
   },
   {
-    point: new THREE.Vector3(0, -1, -10),
+    point: new THREE.Vector3(0, -3, -10),
     year: new Date().toLocaleDateString('default', { year: 'numeric' }),
     title: 'Что дальше?',
     subtitle: 'Открыт к предложениям',
