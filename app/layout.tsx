@@ -1,4 +1,3 @@
-import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
 import localFont from 'next/font/local';
 import "./globals.css";
@@ -14,12 +13,9 @@ const vercettiFont = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Mohit Virli ✌️",
-  description: "A frontend developer by profession, a creative at heart.",
-  keywords: "Mohit Virli, Frontend Engineer, React Developer, Three.js, Creative Developer, Web Development, Angular, JavaScript, TypeScript, Portfolio",
-  authors: [{ name: "Mohit Virli" }],
-  creator: "Mohit Virli",
-  publisher: "Mohit Virli",
+  title: "Арабский Михаил — Product Manager",
+  description: "Junior/Middle Product Manager (0→1, MVP, B2B SaaS) с опытом запуска продуктов с нуля, проведения CustDev и управления кросс-функциональными командами.",
+  authors: [{ name: "Арабский Михаил" }],
   formatDetection: {
     email: false,
     address: false,
@@ -36,20 +32,17 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Mohit Virli - Frontend Engineer",
-    description: "Frontend engineer by profession, creative at heart.",
-    url: "https://mohitvirli.github.io",
-    siteName: "Mohit Virli's Portfolio",
-    locale: "en_US",
+    title: "Арабский Михаил — Product Manager",
+    description: "Product Manager с опытом запуска B2B SaaS продуктов с нуля и быстрого вывода на рынок.",
+    url: "https://michaelpm.ru",
+    siteName: "Арабский Михаил — Портфолио",
+    locale: "ru_RU",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mohit Virli - Frontend Engineer",
-    description: "Frontend engineer by profession, creative at heart.",
-  },
-  verification: {
-    google: "GsRYY-ivL0F_VKkfs5KAeToliqz0gCrRAJKKmFkAxBA",
+    title: "Арабский Михаил — Product Manager",
+    description: "Product Manager с опытом запуска B2B SaaS продуктов с нуля и быстрого вывода на рынок.",
   },
 };
 
@@ -66,13 +59,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overscroll-y-none">
+    <html lang="ru" className="overscroll-y-none">
       <body
         className={`${soriaFont.variable} ${vercettiFont.variable} font-sans antialiased`}
       >
         {children}
       </body>
-      <GoogleAnalytics gaId={'G-7WD4HM3XRE'}/>
     </html>
   );
 }

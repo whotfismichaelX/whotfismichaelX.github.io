@@ -1,26 +1,53 @@
-# mohitvirli.github.io
-Hello there! I'm Mohit Virli, frontend engineer by profession, a creative at heart.
+# Арабский Михаил — Product Manager Portfolio
 
-This the updated version of my personal website which is now in 3D. LFG!
+Личный 3D-портфолио сайт Михаила Арабского. Product Manager с опытом запуска B2B SaaS продуктов с нуля.
 
-Checkout the live version at [mohitvirli.github.io](https://mohitvirli.github.io/)
+**Демо:** [michaelpm.ru](https://michaelpm.ru)
 
-## Tech Stack
+## Технологии
 
-- Next.js
-- React
-- React-three-fiber
-- DREI
-- GSAP
-- Zustand
-- Tailwind
+- **Next.js 15** — фреймворк для React с SSR и статической генерацией
+- **React 19** — библиотека для построения UI
+- **React Three Fiber + DREI** — 3D-сцена с управлением камерой по скроллу
+- **GSAP** — анимации
+- **Zustand** — управление состоянием (portalStore, scrollStore, themeStore)
+- **Tailwind CSS** — стилизация
+- **TypeScript** — типизация
 
-## Preview
-Some of the sample images from the app. Better to check it out live!
+## Требования
 
-<img width="1242" alt="image" src="https://github.com/user-attachments/assets/877b0685-8d86-4f8b-b123-f3cc17d46fc7" />
-<img width="1241" alt="image" src="https://github.com/user-attachments/assets/09a92647-1781-4124-ba3f-1d6fb66f6974" />
-<img width="1241" alt="image" src="https://github.com/user-attachments/assets/a15017f4-f1f2-459e-b895-b3c14703635b" />
-<img width="1428" height="830" alt="image" src="https://github.com/user-attachments/assets/9f78c2e8-991c-4507-8ffb-72e61513c031" />
+- Node.js 18+
 
+## Установка
 
+```bash
+npm install
+```
+
+## Разработка
+
+```bash
+npm run dev
+```
+
+Открывается на [localhost:3000](http://localhost:3000).
+
+## Сборка
+
+```bash
+npm run build
+```
+
+## Линтинг
+
+```bash
+npm run lint
+```
+
+## Переменные окружения
+
+Для настройки Google Analytics создайте файл `.env.local` на основе `.env.example`.
+
+| Переменная | Описание | Обязательная |
+|---|---|---|
+| `GA_MEASUREMENT_ID` | Measurement ID для Google Analytics (формат: `G-XXXXXXXXXX`) | Нет |
