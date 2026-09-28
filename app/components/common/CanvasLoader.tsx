@@ -120,7 +120,8 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
                   fontFamily: 'Arial, sans-serif',
                   fontSize: '14px',
                   textDecoration: 'none',
-                  whiteSpace: 'nowrap',
+                  textAlign: 'center',
+                  maxWidth: 'calc(100vw - 48px)',
                 }}>
                 {label}
               </a>
