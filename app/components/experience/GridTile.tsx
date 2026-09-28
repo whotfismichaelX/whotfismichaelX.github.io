@@ -65,32 +65,39 @@ const GridTile = (props: GridTileProps) => {
   const portalInto = (e: React.MouseEvent) => {
     if (isActive || activePortalId) return;
     e.stopPropagation();
+    gsap.killTweensOf([camera.position, camera.rotation]);
     setActivePortal(id);
     document.body.style.cursor = 'auto';
-    const div = document.createElement('div');
+    const div = document.createElement('button');
+    div.type = 'button';
+    div.setAttribute('aria-label', 'Закрыть раздел');
+    div.style.setProperty('--close-color', id === 'work' ? '#edf0f9' : '#0a0a0a');
 
     div.className = 'fixed close';
     div.style.transform = 'rotateX(90deg)';
     div.onclick = () => exitPortal(true);
 
-    if (!document.querySelector('.close')) {
-      document.body.appendChild(div);
-
-      gsap.fromTo(div, {
-        scale: 0,
-        rotate: '-180deg',
-      },{
-        opacity: 1,
-        zIndex: 10,
-        transform: 'rotateX(0deg)',
-        scale: 1,
-        duration: 1,
-      })
+    const previousClose = document.querySelector('.close');
+    if (previousClose) {
+      gsap.killTweensOf(previousClose);
+      previousClose.remove();
     }
+    document.body.appendChild(div);
+    gsap.fromTo(div, {
+      scale: 0,
+      rotate: '-180deg',
+    }, {
+      opacity: 1,
+      zIndex: 10,
+      transform: 'rotateX(0deg)',
+      scale: 1,
+      duration: 1,
+    });
     document.body.addEventListener('keydown', handleEscape);
     gsap.to(portalRef.current, {
       blend: 1,
       duration: 0.5,
+      overwrite: true,
     });
   };
 
@@ -101,27 +108,29 @@ const GridTile = (props: GridTileProps) => {
     gsap.to(camera.position, {
       x: 0,
       duration: 1,
+      overwrite: true,
     });
 
     gsap.to(camera.rotation, {
       x: -Math.PI / 2,
       y: 0,
       duration: 1,
+      overwrite: true,
     });
 
     gsap.to(portalRef.current, {
       blend: 0,
       duration: 1,
+      overwrite: true,
     });
 
     // Remove the div from the dom
-    gsap.to(document.querySelector('.close'), {
+    const closeButton = document.querySelector('.close');
+    gsap.to(closeButton, {
       scale: 0,
       duration: 0.5,
       onComplete: () => {
-        document.querySelectorAll('.close').forEach((el) => {
-          el.remove();
-        });
+        closeButton?.remove();
       }
     })
     document.body.removeEventListener('keydown', handleEscape);

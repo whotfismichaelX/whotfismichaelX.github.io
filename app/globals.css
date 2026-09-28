@@ -47,6 +47,9 @@ body {
 }
 
 .close {
+  border: 0;
+  padding: 0;
+  background: transparent;
   position: absolute;
   left: 32px;
   top: 32px;
@@ -73,7 +76,7 @@ body {
   content: ' ';
   height: 48px;
   width: 2px;
-  background-color: #0a0a0a;
+  background-color: var(--close-color, #0a0a0a);
 }
 
 .close:before {

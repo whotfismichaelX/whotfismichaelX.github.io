@@ -7,5 +7,5 @@ interface ScrollStore {
 
 export const useScrollStore = create<ScrollStore>((set) => ({
   scrollProgress: 0,
-  setScrollProgress: (progress) => set(() => ({ scrollProgress: progress })),
+  setScrollProgress: (progress) => set((state) => state.scrollProgress === progress ? state : { scrollProgress: progress }),
 }));

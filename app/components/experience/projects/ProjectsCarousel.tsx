@@ -19,19 +19,19 @@ const ProjectsCarousel = () => {
   };
 
   const tiles = useMemo(() => {
-    const fov = Math.PI;
+    const spread = Math.PI * 2 / 3;
     const distance = 13;
     const count = PROJECTS.length;
 
     return PROJECTS.map((project, i) => {
-      const angle = (fov / count) * i;
-      const z = -distance * Math.sin(angle);
-      const x = -distance * Math.cos(angle);
-      const rotY = Math.PI / 2 - angle;
+      const angle = count === 1 ? 0 : -spread / 2 + spread * i / (count - 1);
+      const z = -distance * Math.cos(angle);
+      const x = distance * Math.sin(angle);
+      const rotY = -angle;
 
       return (
         <ProjectTile
-          key={i}
+          key={project.title}
           project={project}
           index={i}
           position={[x, 1, z]}
@@ -41,10 +41,10 @@ const ProjectsCarousel = () => {
         />
       );
     });
-  }, [activeId, isActive]);
+  }, [activeId]);
 
   return (
-    <group rotation={[0, -Math.PI / 12, 0]}>
+    <group>
       {tiles}
     </group>
   );

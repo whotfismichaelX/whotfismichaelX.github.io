@@ -2,6 +2,7 @@
 
 import { useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
+import { useLayoutEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
 import * as THREE from "three";
 
@@ -10,8 +11,41 @@ import { usePortalStore, useScrollStore } from "@stores";
 const ScrollWrapper = (props: { children: React.ReactNode | React.ReactNode[]}) => {
   const { camera } = useThree();
   const data = useScroll();
-  const isActive = usePortalStore((state) => !!state.activePortalId);
+  const activePortalId = usePortalStore((state) => state.activePortalId);
+  const isActive = !!activePortalId;
   const setScrollProgress = useScrollStore((state) => state.setScrollProgress);
+  const previousPortal = useRef<string | null>(null);
+  const pagePosition = useRef({ fraction: 0, offset: 0 });
+
+  useLayoutEffect(() => {
+    // One scroll element owns wheel, touch and pointer events in every scene.
+    // Preserve the page position while Work uses its own 0–1 timeline range.
+    if (activePortalId && !previousPortal.current) {
+      pagePosition.current = {
+        fraction: data.el.scrollTop / Math.max(1, data.el.scrollHeight - data.el.clientHeight),
+        offset: data.offset,
+      };
+    }
+
+    if (activePortalId === 'work') {
+      data.el.scrollTop = 0;
+      data.el.dispatchEvent(new Event('scroll'));
+      data.offset = 0;
+      data.delta = 0;
+      setScrollProgress(0);
+    } else if (previousPortal.current) {
+      data.el.scrollTop = pagePosition.current.fraction * (data.el.scrollHeight - data.el.clientHeight);
+      data.el.dispatchEvent(new Event('scroll'));
+      data.offset = pagePosition.current.offset;
+      data.delta = 0;
+      setScrollProgress(pagePosition.current.offset);
+    }
+
+    data.el.style.overflowY = activePortalId === 'projects' ? 'hidden' : 'auto';
+    data.el.style.overscrollBehavior = 'contain';
+    data.el.dataset.scrollMode = activePortalId ?? 'page';
+    previousPortal.current = activePortalId;
+  }, [activePortalId, data, setScrollProgress]);
 
   useFrame((state, delta) => {
     if (data) {
@@ -25,6 +59,8 @@ const ScrollWrapper = (props: { children: React.ReactNode | React.ReactNode[]}) 
         camera.position.z = THREE.MathUtils.damp(camera.position.z, 5 + 10 * d, 7, delta);
 
         setScrollProgress(data.range(0, 1));
+      } else if (activePortalId === 'work') {
+        setScrollProgress(THREE.MathUtils.clamp(data.offset, 0, 1));
       }
 
       // Move camera slightly on mouse movement.

@@ -19,7 +19,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 
 const CanvasLoader = (props: { children: React.ReactNode }) => {
   const workIsActive = usePortalStore((state) => state.activePortalId === 'work');
-  const workProgress = useScrollStore((state) => state.scrollProgress);
+  const certificatePointVisible = useScrollStore((state) => state.scrollProgress >= 0.69 && state.scrollProgress <= 0.87);
   const certificateLinks = WORK_TIMELINE.find((point) => point.links)?.links;
   const [selectedCertificate, setSelectedCertificate] = useState<{ label: string, url: string, previewUrl: string } | null>(null);
   const [certificateZoomed, setCertificateZoomed] = useState(false);
@@ -51,11 +51,19 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!selectedCertificate) return;
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setSelectedCertificate(null);
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        setSelectedCertificate(null);
+      }
     };
-    document.addEventListener('keydown', closeOnEscape);
-    return () => document.removeEventListener('keydown', closeOnEscape);
+    document.addEventListener('keydown', closeOnEscape, true);
+    return () => document.removeEventListener('keydown', closeOnEscape, true);
   }, [selectedCertificate]);
+
+  useEffect(() => {
+    if (!workIsActive) setSelectedCertificate(null);
+  }, [workIsActive]);
 
   useGSAP(() => {
     if (progress === 100) {
@@ -104,7 +112,7 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
           <AdaptiveDpr pixelated/>
         </Canvas>
         <ProgressLoader progress={progress} />
-        {workIsActive && workProgress >= 0.69 && workProgress <= 0.87 && certificateLinks && (
+        {workIsActive && certificatePointVisible && certificateLinks && (
           <div
             style={{
               position: 'absolute',
@@ -178,7 +186,7 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
                 fontFamily: 'Arial, sans-serif',
               }}>
                 <span style={{ flex: 1, fontSize: '15px', overflowWrap: 'anywhere' }}>{selectedCertificate.label}</span>
-                <a href={selectedCertificate.url} style={{ color: '#fff', fontSize: '13px', whiteSpace: 'nowrap' }}>Открыть PDF</a>
+                <a href={selectedCertificate.url} target="_blank" rel="noopener noreferrer" style={{ color: '#fff', fontSize: '13px', whiteSpace: 'nowrap' }}>Открыть PDF ↗</a>
                 <button
                   type="button"
                   aria-label={certificateZoomed ? 'Уместить сертификат' : 'Увеличить сертификат'}
@@ -194,7 +202,7 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
                   ×
                 </button>
               </div>
-              <div style={{ position: 'relative', flex: 1, minHeight: 0, overflow: 'auto', background: '#f5f5f5' }}>
+              <div style={{ position: 'relative', flex: 1, minHeight: 0, overflow: 'auto', overscrollBehavior: 'contain', background: '#f5f5f5' }}>
                 {certificateZoomed ? (
                   <Image
                     src={selectedCertificate.previewUrl}

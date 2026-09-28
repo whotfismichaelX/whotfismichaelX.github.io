@@ -28,8 +28,10 @@ const TimelinePoint = ({ point, diff }: { point: WorkTimelinePoint, diff: number
     color: "white",
     anchorX: textAlign,
     fillOpacity: 2 - 2 * diff,
-    ...(point.links ? { outlineWidth: 0.01, outlineColor: '#211d1c' } : {}),
-  }), [textAlign, diff, point.links]);
+    outlineWidth: 0.006,
+    outlineColor: '#211d1c',
+    outlineOpacity: 0.8 * Math.min(1, Math.max(0, 2 - 2 * diff)),
+  }), [textAlign, diff]);
 
   const titleProps = useMemo(() => ({
     ...textProps,
@@ -94,6 +96,7 @@ const Timeline = ({ progress }: { progress: number }) => {
 
   useEffect(() => {
     const tl = gsap.timeline();
+    let animationTimeout: ReturnType<typeof setTimeout> | undefined;
     if (groupRef.current) {
       tl.to(groupRef.current.scale, {
         x: isActive ? 1 : 0,
@@ -112,7 +115,7 @@ const Timeline = ({ progress }: { progress: number }) => {
     if (isActive) {
       let i = 0;
       clearInterval(intervalRef.current!);
-      setTimeout(() => {
+      animationTimeout = setTimeout(() => {
         intervalRef.current = setInterval(() => {
           const p = i++ / 100;
           setVisibleDashedCurvePoints(curvePoints.slice(0, Math.max(1, Math.ceil(p * curvePoints.length))));
@@ -124,8 +127,13 @@ const Timeline = ({ progress }: { progress: number }) => {
       clearInterval(intervalRef.current!);
     }
 
-    return () => clearInterval(intervalRef.current!);
-  }, [isActive]);
+    return () => {
+      clearTimeout(animationTimeout);
+      clearInterval(intervalRef.current!);
+      intervalRef.current = null;
+      tl.kill();
+    };
+  }, [isActive, curvePoints]);
 
   return (
     <group position={[0, -0.1, -0.1]}>

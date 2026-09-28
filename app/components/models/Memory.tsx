@@ -9,7 +9,7 @@ Title: Dali,The Persistence of Memory
 */
 
 import * as THREE from 'three'
-import React, { JSX } from 'react'
+import React, { JSX, useEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 
@@ -36,21 +36,60 @@ type GLTFResult = GLTF & {
   }
 }
 
-export function Memory(props: JSX.IntrinsicElements['group']) {
+type MemoryProps = JSX.IntrinsicElements['group'] & { nightScene?: boolean };
+
+export function Memory({ nightScene = false, ...props }: MemoryProps) {
   const { nodes, materials } = useGLTF('models/dalithe_persistence_of_memory.glb') as GLTFResult
+  const landscape = useMemo(() => {
+    const original = nodes['Box001_05_-_Default_0'].geometry;
+    if (!nightScene) return original;
+    const geometry = original.clone();
+    const positions = geometry.getAttribute('position');
+    const indices = geometry.getIndex();
+    const kept: number[] = [];
+    // The slab and painted rock are disconnected parts behind z=-250
+    // in the source mesh. Preserve the foreground artwork.
+    const count = indices ? indices.count : positions.count;
+    for (let i = 0; i < count; i += 3) {
+      const a = indices ? indices.getX(i) : i;
+      const b = indices ? indices.getX(i + 1) : i + 1;
+      const c = indices ? indices.getX(i + 2) : i + 2;
+      if (Math.max(positions.getZ(a), positions.getZ(b), positions.getZ(c)) > -240) kept.push(a, b, c);
+    }
+    geometry.setIndex(kept);
+    return geometry;
+  }, [nodes, nightScene]);
+  const groundMaterial = useMemo(() => {
+    if (!nightScene) return materials['16_-_Matte_Plastic'];
+    const material = materials['16_-_Matte_Plastic'].clone();
+    material.color.setRGB(0.55, 0.64, 0.85);
+    return material;
+  }, [materials, nightScene]);
+  const groundBaseMaterial = useMemo(() => {
+    if (!nightScene) return materials.Ceramic1;
+    const material = materials.Ceramic1.clone();
+    material.color.multiply(new THREE.Color().setRGB(0.55, 0.64, 0.85));
+    return material;
+  }, [materials, nightScene]);
+  useEffect(() => () => {
+    if (nightScene) {
+      landscape.dispose();
+      groundMaterial.dispose();
+      groundBaseMaterial.dispose();
+    }
+  }, [landscape, groundMaterial, groundBaseMaterial, nightScene]);
   return (
     <group {...props} dispose={null}>
       <mesh castShadow receiveShadow geometry={nodes['Extract2_04_-_Default_0'].geometry} material={materials['04_-_Default']} scale={0.021} />
-      <mesh castShadow receiveShadow geometry={nodes.Cylinder006_Ceramic_0.geometry} material={materials.Ceramic} position={[0.541, 0, 2.543]} rotation={[-Math.PI / 2, 0, 0]} scale={0.021} />
-      <mesh castShadow receiveShadow geometry={nodes['Box001_05_-_Default_0'].geometry} material={materials['05_-_Default']} scale={0.021} />
+      {!nightScene && <mesh castShadow receiveShadow geometry={nodes.Cylinder006_Ceramic_0.geometry} material={materials.Ceramic} position={[0.541, 0, 2.543]} rotation={[-Math.PI / 2, 0, 0]} scale={0.021} />}
+      <mesh castShadow receiveShadow geometry={landscape} material={materials['05_-_Default']} scale={0.021} />
       <mesh castShadow receiveShadow geometry={nodes['Line005_02_-_Default_0'].geometry} material={materials['02_-_Default']} position={[0, 0.005, 0]} scale={0.021} />
       <mesh castShadow receiveShadow geometry={nodes['Cylinder003_01_-_Default_0'].geometry} material={materials['01_-_Default']} position={[-0.584, 0.659, -1.595]} scale={0.021} />
       <mesh castShadow receiveShadow geometry={nodes['Sphere003_03_-_Default_0'].geometry} material={materials['03_-_Default']} position={[-0.901, 0.331, -1.311]} rotation={[-Math.PI / 2, 0, 0]} scale={0.021} />
-      <mesh castShadow receiveShadow geometry={nodes['Line004_16_-_Matte_Plastic_0'].geometry} material={materials['16_-_Matte_Plastic']} rotation={[-Math.PI / 2, 0, 0]} scale={0.021} />
-      <mesh castShadow receiveShadow geometry={nodes.Cylinder007_Ceramic1_0.geometry} material={materials.Ceramic1} position={[0.541, 0, 2.543]} rotation={[-Math.PI / 2, 0, 0]} scale={0.022} />
+      <mesh castShadow receiveShadow geometry={nodes['Line004_16_-_Matte_Plastic_0'].geometry} material={groundMaterial} rotation={[-Math.PI / 2, 0, 0]} scale={0.021} />
+      <mesh castShadow receiveShadow geometry={nodes.Cylinder007_Ceramic1_0.geometry} material={groundBaseMaterial} position={[0.541, 0, 2.543]} rotation={[-Math.PI / 2, 0, 0]} scale={0.022} />
     </group>
   )
 }
 
 useGLTF.preload('models/dalithe_persistence_of_memory.glb')
-
