@@ -88,7 +88,7 @@ const ProjectTile = ({ project, index, position, rotation, activeId, onClick }: 
     const button = e.eventObject;
     gsap.to(button.position, { z: 0, duration: 0.1 })
       .then(() => gsap.to(button.position, { z: 0.3, duration: 0.3 }));
-    setTimeout(() => window.open(project.url, '_blank'), 50);
+    window.open(project.url, '_blank', 'noopener,noreferrer');
   };
 
   return (

@@ -3,6 +3,7 @@ import { usePortalStore, useScrollStore } from "@stores";
 import { useEffect } from "react";
 import * as THREE from "three";
 import { Memory } from "../../models/Memory";
+import { MountainBackdrop } from "../../models/MountainBackdrop";
 import Timeline from "./Timeline";
 
 const Work = () => {
@@ -45,6 +46,7 @@ const Work = () => {
 
   return (
     <group>
+      <MountainBackdrop />
       <mesh receiveShadow>
         <planeGeometry args={[4, 4, 1]} />
         <shadowMaterial opacity={0.1} />
