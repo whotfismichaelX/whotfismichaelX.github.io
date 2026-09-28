@@ -35,7 +35,19 @@ export const WORK_TIMELINE: WorkTimelinePoint[] = [
     position: 'right',
   },
   {
-    point: new THREE.Vector3(1, 1, -12),
+    point: new THREE.Vector3(5, 3, -12),
+    year: '2026',
+    title: 'Сертификаты',
+    subtitle: 'Cisco & OpenAI Academy',
+    description: 'Cisco: Junior Cybersecurity Analyst Career Path.\nOpenAI: Apply AI at Work (до 28 марта 2027).',
+    links: [
+      { label: 'Cisco Networking Academy ↗', url: '/certificates/cisco-junior-cybersecurity-analyst.pdf' },
+      { label: 'OpenAI Academy ↗', url: '/certificates/openai-apply-ai-at-work.pdf' },
+    ],
+    position: 'left',
+  },
+  {
+    point: new THREE.Vector3(1, 1, -15),
     year: new Date().toLocaleDateString('default', { year: 'numeric' }),
     title: 'Что дальше?',
     subtitle: 'Открыт к предложениям',

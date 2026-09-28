@@ -6,5 +6,6 @@ export interface WorkTimelinePoint {
   title: string,
   subtitle?: string,
   description?: string,
+  links?: { label: string, url: string }[],
   position: 'left' | 'right',
 }

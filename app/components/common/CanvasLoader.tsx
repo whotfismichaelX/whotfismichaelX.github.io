@@ -7,7 +7,8 @@ import gsap from "gsap";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 
-import { useThemeStore } from "@stores";
+import { usePortalStore, useScrollStore, useThemeStore } from "@stores";
+import { WORK_TIMELINE } from "@constants";
 
 import Preloader from "./Preloader";
 import ProgressLoader from "./ProgressLoader";
@@ -16,6 +17,9 @@ import ThemeSwitcher from "./ThemeSwitcher";
 // import {Perf} from "r3f-perf"
 
 const CanvasLoader = (props: { children: React.ReactNode }) => {
+  const workIsActive = usePortalStore((state) => state.activePortalId === 'work');
+  const workProgress = useScrollStore((state) => state.scrollProgress);
+  const certificateLinks = WORK_TIMELINE.find((point) => point.links)?.links;
   const ref= useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundColor = useThemeStore((state) => state.theme.color);
@@ -88,6 +92,41 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
           <AdaptiveDpr pixelated/>
         </Canvas>
         <ProgressLoader progress={progress} />
+        {workIsActive && workProgress >= 0.69 && workProgress <= 0.87 && certificateLinks && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '8%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 20,
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: '12px',
+              maxWidth: 'calc(100% - 48px)',
+            }}>
+            {certificateLinks.map(({ label, url }) => (
+              <a
+                key={url}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: '10px 14px',
+                  border: '1px solid rgba(255,255,255,0.7)',
+                  background: 'rgba(20,18,22,0.9)',
+                  color: '#fff',
+                  fontFamily: 'Arial, sans-serif',
+                  fontSize: '14px',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}>
+                {label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
       <ThemeSwitcher />
       <ScrollHint />
