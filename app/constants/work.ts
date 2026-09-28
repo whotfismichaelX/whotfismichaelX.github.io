@@ -27,7 +27,7 @@ export const WORK_TIMELINE: WorkTimelinePoint[] = [
     position: 'left',
   },
   {
-    point: new THREE.Vector3(0, -3, -9),
+    point: new THREE.Vector3(4, -1, -9),
     year: '2026—н.в.',
     title: 'ООО «ТОР»',
     subtitle: 'Product Manager',
