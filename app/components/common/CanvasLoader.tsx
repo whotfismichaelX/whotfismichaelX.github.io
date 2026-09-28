@@ -4,6 +4,7 @@ import { useGSAP } from "@gsap/react";
 import { AdaptiveDpr, Preload, ScrollControls, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import gsap from "gsap";
+import Image from "next/image";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 
@@ -20,6 +21,8 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
   const workIsActive = usePortalStore((state) => state.activePortalId === 'work');
   const workProgress = useScrollStore((state) => state.scrollProgress);
   const certificateLinks = WORK_TIMELINE.find((point) => point.links)?.links;
+  const [selectedCertificate, setSelectedCertificate] = useState<{ label: string, url: string, previewUrl: string } | null>(null);
+  const [certificateZoomed, setCertificateZoomed] = useState(false);
   const ref= useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundColor = useThemeStore((state) => state.theme.color);
@@ -44,6 +47,15 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
       setCanvasStyle({ ...canvasStyle, ...borderStyle})
     }
   }, [isMobile]);
+
+  useEffect(() => {
+    if (!selectedCertificate) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelectedCertificate(null);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [selectedCertificate]);
 
   useGSAP(() => {
     if (progress === 100) {
@@ -106,17 +118,20 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
               gap: '12px',
               maxWidth: 'calc(100% - 48px)',
             }}>
-            {certificateLinks.map(({ label, url }) => (
-              <a
+            {certificateLinks.map(({ label, url, previewUrl }) => (
+              <button
                 key={url}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
+                type="button"
+                onClick={() => {
+                  setCertificateZoomed(false);
+                  setSelectedCertificate({ label, url, previewUrl });
+                }}
                 style={{
                   padding: '10px 14px',
                   border: '1px solid rgba(255,255,255,0.7)',
                   background: 'rgba(20,18,22,0.9)',
                   color: '#fff',
+                  cursor: 'pointer',
                   fontFamily: 'Arial, sans-serif',
                   fontSize: '14px',
                   textDecoration: 'none',
@@ -124,8 +139,83 @@ const CanvasLoader = (props: { children: React.ReactNode }) => {
                   maxWidth: 'calc(100vw - 48px)',
                 }}>
                 {label}
-              </a>
+              </button>
             ))}
+          </div>
+        )}
+        {selectedCertificate && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedCertificate.label}
+            onClick={(event) => {
+              if (event.target === event.currentTarget) setSelectedCertificate(null);
+            }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 100,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px',
+              background: 'rgba(0,0,0,0.85)',
+            }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: 'min(1100px, 100%)',
+              height: 'calc(100dvh - 32px)',
+              background: '#fff',
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '10px 14px',
+                background: '#171717',
+                color: '#fff',
+                fontFamily: 'Arial, sans-serif',
+              }}>
+                <span style={{ flex: 1, fontSize: '15px', overflowWrap: 'anywhere' }}>{selectedCertificate.label}</span>
+                <a href={selectedCertificate.url} style={{ color: '#fff', fontSize: '13px', whiteSpace: 'nowrap' }}>Открыть PDF</a>
+                <button
+                  type="button"
+                  aria-label={certificateZoomed ? 'Уместить сертификат' : 'Увеличить сертификат'}
+                  onClick={() => setCertificateZoomed(!certificateZoomed)}
+                  style={{ border: 0, background: 'none', color: '#fff', cursor: 'pointer', fontSize: '24px', lineHeight: 1 }}>
+                  {certificateZoomed ? '−' : '+'}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Закрыть сертификат"
+                  onClick={() => setSelectedCertificate(null)}
+                  style={{ border: 0, background: 'none', color: '#fff', cursor: 'pointer', fontSize: '26px', lineHeight: 1 }}>
+                  ×
+                </button>
+              </div>
+              <div style={{ position: 'relative', flex: 1, minHeight: 0, overflow: 'auto', background: '#f5f5f5' }}>
+                {certificateZoomed ? (
+                  <Image
+                    src={selectedCertificate.previewUrl}
+                    alt={selectedCertificate.label}
+                    width={1980}
+                    height={1530}
+                    unoptimized
+                    style={{ display: 'block', width: 'max(100%, 1400px)', maxWidth: 'none', height: 'auto' }}
+                  />
+                ) : (
+                  <Image
+                    src={selectedCertificate.previewUrl}
+                    alt={selectedCertificate.label}
+                    fill
+                    sizes="(max-width: 1100px) 100vw, 1100px"
+                    unoptimized
+                    style={{ objectFit: 'contain' }}
+                  />
+                )}
+              </div>
+            </div>
           </div>
         )}
       </div>

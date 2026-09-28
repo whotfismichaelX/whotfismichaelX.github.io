@@ -41,8 +41,8 @@ export const WORK_TIMELINE: WorkTimelinePoint[] = [
     subtitle: 'Cisco & OpenAI Academy',
     description: 'Cisco: Junior Cybersecurity Analyst Career Path.\nOpenAI: Apply AI at Work (до 28 марта 2027).',
     links: [
-      { label: 'Cisco — Junior Cybersecurity Analyst Career Path ↗', url: '/certificates/cisco-junior-cybersecurity-analyst.pdf' },
-      { label: 'OpenAI Academy — Apply AI at Work ↗', url: '/certificates/openai-apply-ai-at-work.pdf' },
+      { label: 'Cisco — Junior Cybersecurity Analyst Career Path', url: '/certificates/cisco-junior-cybersecurity-analyst.pdf', previewUrl: '/certificates/cisco-junior-cybersecurity-analyst.webp' },
+      { label: 'OpenAI Academy — Apply AI at Work', url: '/certificates/openai-apply-ai-at-work.pdf', previewUrl: '/certificates/openai-apply-ai-at-work.webp' },
     ],
     position: 'left',
   },
