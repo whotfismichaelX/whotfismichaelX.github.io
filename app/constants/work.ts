@@ -27,6 +27,14 @@ export const WORK_TIMELINE: WorkTimelinePoint[] = [
     position: 'left',
   },
   {
+    point: new THREE.Vector3(0, -3, -9),
+    year: '2026—н.в.',
+    title: 'ООО «ТОР»',
+    subtitle: 'Product Manager',
+    description: 'AI-продукт для автоматизации Red Team-сценариев.\nЗапустил продукт за 4 месяца; провёл 15+ интервью.\nНа одной тестовой выборке: FPR 70%→4%, Initial Access 60%→83%.\nОколо 400 тыс. ₽ выручки за период работы.',
+    position: 'right',
+  },
+  {
     point: new THREE.Vector3(1, 1, -12),
     year: new Date().toLocaleDateString('default', { year: 'numeric' }),
     title: 'Что дальше?',
